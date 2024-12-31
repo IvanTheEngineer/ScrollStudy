@@ -38,12 +38,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 // Replaces occasional tweets with questions
 function replaceTweets() {
-    if (questionlist.length < 10) {
+    if (questionlist.length < 15) {
         if (!geminiCalled){
             geminiCalled = true;
             callGemini();
         }
     }
+
+    if (questionlist.length < 1) {
+        return
+    }
+
     const tweets = Array.from(document.querySelectorAll('article[data-testid="tweet"]')).filter((tweet) => {
         const rect = tweet.getBoundingClientRect();
         return rect.top > window.innerHeight;
