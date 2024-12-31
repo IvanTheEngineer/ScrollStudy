@@ -1,0 +1,25 @@
+<html>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <body style="background: rgb(0, 146, 202); box-shadow: none; width:350px">
+    <img height=40px src="full_logo.png" alt="Logo">
+    <p style="color: white; font-weight: bold; text-align: center;">Correct Answers: <span id="answer_stats">Loading...</span></p>
+    <script src="popup.js"></script>
+    <div class="flex-container">
+      <label style="color: white; font-weight: bold; text-align: center;" for="toggle-switch">Enable: </label>
+      <label class="switch">
+        <input type="checkbox" id="toggle-switch">
+        <span class="slider round"></span>
+      </label>
+    </div>
+    <div class="flex-container">
+      <span style="color: white; font-weight: bold; text-align: center;" class="label">Subject:</span>
+      <div>
+        <input type="text" style="width:240px" id="subject-input" maxlength="50" placeholder="Type here..." />
+        <button id="save-button" class="save-button">
+          <i class="fa fa-save"></i>
+        </button>
+      </div>
+    </div>
+  </body>
+</html>

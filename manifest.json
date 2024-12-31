@@ -1,0 +1,28 @@
+{
+  "name": "ScrollStudy",
+  "description": "Learn while scrolling your favorite social media app!",
+  "version": "1.0",
+  "manifest_version": 3,
+  "permissions": ["activeTab", "storage", "scripting", "tabs"],
+  "host_permissions": ["https://x.com/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://x.com/*"],
+      "js": ["replace.js"],
+      "type": "module"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["construction.jpg"],
+      "matches": ["https://x.com/*"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "hello.html",
+    "default_icon": "scrollstudyicon.png"
+  }
+}
