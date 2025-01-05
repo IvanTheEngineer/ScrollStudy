@@ -3,7 +3,12 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <body style="background: rgb(0, 146, 202); box-shadow: none; width:350px">
     <img height=40px src="full_logo.png" alt="Logo">
-    <p style="color: white; font-weight: bold; text-align: center;">Correct Answers: <span id="answer_stats">Loading...</span></p>
+    <div style="display: flex; align-items: center; justify-content: center;">
+      <p style="color: white; font-weight: bold; text-align: center;">Correct Answers: <span id="answer_stats">Loading...</span></p>
+      <button id="reset-stats" style="margin-left: 10px;">
+        <i class="fa fa-refresh"></i>
+      </button>
+    </div>
     <script src="popup.js"></script>
     <div class="flex-container">
       <label style="color: white; font-weight: bold; text-align: center;" for="toggle-switch">Enable: </label>
@@ -16,7 +21,7 @@
       <span style="color: white; font-weight: bold; text-align: center;" class="label">Subject:</span>
       <div>
         <input type="text" style="width:240px" id="subject-input" maxlength="50" placeholder="Type here..." />
-        <button id="save-button" class="save-button">
+        <button id="save-button" style="margin-left: 5px;" class="save-button">
           <i class="fa fa-save"></i>
         </button>
       </div>

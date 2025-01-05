@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const toggleSwitch = document.getElementById("toggle-switch");
     const textInput = document.getElementById("subject-input");
     const saveButton = document.getElementById("save-button");
+    const resetButton = document.getElementById("reset-stats");
 
     // fetches state of on/off button from local storage
     chrome.storage.local.get({ On: false }, (result) => {
@@ -43,6 +44,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // event listener for save button click to send updated subject to background.js for local storage
     saveButton.addEventListener("click", () => {
         const text = textInput.value;
+        saveButton.style.backgroundColor = "#90ee90";
+
+        setTimeout(() => {
+            saveButton.style.backgroundColor = "";
+            saveButton.style.color = "";
+        }, 200);
 
         chrome.runtime.sendMessage(
         { type: "SAVE_SUBJECT", text },
@@ -51,4 +58,21 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         );
     });
+
+
+    resetButton.addEventListener("click", () => {
+        chrome.runtime.sendMessage({ 
+            type: "RESET_ANSWER_STATS", 
+            answer_stats: { correct: 0, answered: 0 }
+        }, (response) => {
+            // Debug
+            if (chrome.runtime.lastError) {
+                console.error("Error sending message to background.js:", chrome.runtime.lastError.message);
+            } else {
+                console.log("Response from background.js:", response);
+            }
+        });
+        document.getElementById("answer_stats").textContent = `${0} / ${0}`;
+    });
+
   });

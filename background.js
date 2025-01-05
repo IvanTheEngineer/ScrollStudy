@@ -10,6 +10,23 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             sendResponse({ success: true });
         });
         return true;
+    } else if (message.type === "RESET_ANSWER_STATS") {
+      chrome.storage.local.set({ answer_stats: message.answer_stats }, () => {
+        console.log("Answer stats updated:", message.answer_stats);
+
+        // Notify all content scripts about the updated state
+        chrome.tabs.query({}, (tabs) => {
+          tabs.forEach((tab) => {
+            chrome.tabs.sendMessage(tab.id, {
+              type: "RESET_ANSWER_STATS",
+              answer_stats: message.answer_stats,
+            });
+          });
+        });
+
+        sendResponse({ success: true });
+      });
+      return true;
     } else if (message.type === "TOGGLE_ON") {
         // Updates the toggle state in storage
         chrome.storage.local.set({ On: message.enabled }, () => {

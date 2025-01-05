@@ -33,6 +33,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     else {
         stopFeedObserver();
     }
+  } else if (message.type === "RESET_ANSWER_STATS") {
+    answered = message.answer_stats.answered;
+    correct = message.answer_stats.correct;
   }
 });
 
@@ -78,17 +81,17 @@ function replaceTweets() {
     const replacementArticle = document.createElement("article");
     replacementArticle.style.width = "100%";
     replacementArticle.style.padding = "10px";
-    replacementArticle.style.border = "1px solid #ccc";
     replacementArticle.style.borderRadius = "8px";
     replacementArticle.style.backgroundColor = "black";
+    replacementArticle.className = "css-175oi2r";
 
     const questionText = document.createElement("h3");
     questionText.textContent = questionData.question_text;
     questionText.style.marginBottom = "10px";
+    questionText.style.fontFamily = "'Open Sans', sans-serif";
     replacementArticle.appendChild(questionText);
 
     const answersContainer = document.createElement("div");
-    answersContainer.style.marginBottom = "10px";
 
     allAnswers.forEach((answer) => {
         const answerButton = document.createElement("button");
@@ -100,6 +103,9 @@ function replaceTweets() {
         answerButton.style.borderRadius = "5px";
         answerButton.style.cursor = "pointer";
         answerButton.style.textAlign = "left";
+        answerButton.style.width = "100%";
+        answerButton.style.fontFamily = "'Open Sans', sans-serif";
+
 
 
         answerButton.addEventListener("click", () => {
@@ -107,7 +113,7 @@ function replaceTweets() {
         const buttons = answersContainer.querySelectorAll("button");
         buttons.forEach((btn) => {
             if (questionData.correct_answers.includes(btn.textContent)) {
-            btn.style.backgroundColor = "green";
+            btn.style.backgroundColor = "rgba(0, 128, 0, 0.5)";
             btn.style.color = "white";
             if (btn === answerButton) {
                 correct += 1; 
@@ -115,7 +121,7 @@ function replaceTweets() {
                 console.log("Correct answers count:", correct);
               }
             } else {
-            btn.style.backgroundColor = "red";
+            btn.style.backgroundColor = "rgba(255, 0, 0, 0.5)";
             btn.style.color = "white";
             }
             btn.disabled = true;
@@ -146,12 +152,11 @@ function replaceTweets() {
     replacementArticle.appendChild(answersContainer);
 
     const explanation = document.createElement("p");
-    explanation.textContent = questionData.explanation;
+    explanation.innerHTML = `<strong>Explanation:</strong> ${questionData.explanation}`;
     explanation.style.display = "none"; // Initially hidden
-    explanation.style.marginTop = "10px";
     explanation.style.padding = "10px";
-    explanation.style.border = "1px solid #ccc";
-    explanation.style.borderRadius = "5px";
+    explanation.style.margin = "5px";
+    explanation.style.fontFamily = "'Open Sans', sans-serif";
     replacementArticle.appendChild(explanation);
     randomTweet.replaceWith(replacementArticle);
 
