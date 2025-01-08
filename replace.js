@@ -209,96 +209,182 @@ function waitForFeed() {
   }
   
 // waitForFeed();
-
-// API call to gemii to top-up the question bank
-async function callGemini() {
-    const apiKey = "REDACTED";
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`;
-
-    const subject = await new Promise((resolve) => {
-        chrome.storage.local.get({ subject: null }, (result) => {
-          const retrievedSubject = result.subject || "random trivia questions";
-          console.log("Subject retrieved:", retrievedSubject);
-          resolve(retrievedSubject);
-        });
-      });
-    
-    const requestBody = {
-      contents: [
-        {
-          role: "user",
-          parts: [
-            {
-              text: `Give me a list of 20 graduate level questions with the subject: ${subject}. Make sure the full response is included and not just the letter. 
-              Do not keywords from the question in the correct answer. The correct answer should not always be the longest answer. Ensure there always is a correct answer.`
-            }
-          ]
-        }
-      ],
-      generationConfig: {
-        temperature: 1,
-        topK: 40,
-        topP: 0.95,
-        maxOutputTokens: 8192,
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: "array",
-          description: "List of questions with their answers and explanations",
-          items: {
-            type: "object",
-            description: "Question and answer data",
-            properties: {
-              question_text: {
-                type: "string",
-                description: "The text of the question",
-                nullable: false
-              },
-              correct_answers: {
-                type: "array",
-                description: "List of correct answers",
-                nullable: false,
-                items: {
-                  type: "string"
-                }
-              },
-              incorrect_answers: {
-                type: "array",
-                description: "List of incorrect answers",
-                nullable: false,
-                items: {
-                  type: "string"
-                }
-              },
-              topic: {
-                type: "string",
-                description: "The specific topic covered by the question",
-                nullable: false
-              },
-              explanation: {
-                type: "string",
-                description: "Explanation of the correct answer",
-                nullable: false
-              }
-            },
-            required: [
-              "question_text",
-              "correct_answers",
-              "incorrect_answers",
-              "topic",
-              "explanation"
-            ]
-          }
-        }
-      }
+const apiKey = "AIzaSyBBZWO2wV_rOSVFWfH-aVK-vCIFoIqzrtU";
+  
+  async function uploadFile(file) {
+    const url = `https://generativelanguage.googleapis.com/upload/v1beta/files?key=${apiKey}`;
+    const fileBlob = new Blob([file], { type: file.type });
+    const fileSize = fileBlob.size;
+  
+    const headers = {
+      "X-Goog-Upload-Command": "start, upload, finalize",
+      "X-Goog-Upload-Header-Content-Length": fileSize.toString(),
+      "X-Goog-Upload-Header-Content-Type": file.type,
+      "X-Goog-Upload-Protocol": "raw",
+      "Content-Type": file.type,
     };
   
     try {
       const response = await fetch(url, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
+        headers: headers,
+        body: fileBlob, // Send raw binary data
+      });
+  
+      const rawResponse = await response.text();
+      console.log("Raw upload response:", rawResponse);
+  
+      const data = JSON.parse(rawResponse);
+      console.log("Parsed upload response:", data);
+  
+      if (!data.file || !data.file.uri) {
+        throw new Error("Upload did not return a valid file URI.");
+      }
+  
+      return data.file.uri; 
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      throw error;
+    }
+  }
+
+  // Testing
+  const fileUrl = chrome.runtime.getURL("SWE_Sample_Study_Guide.pdf");
+  console.log(fileUrl);
+  fetch(fileUrl)
+    .then((response) => response.blob())
+    .then((blob) => {
+      const file = new File([blob], "example.pdf", { type: "application/pdf" });
+      callGemini({useFile: true, file: file});
+    })
+  .catch((error) => console.error("Error loading file:", error));
+
+
+  async function callGemini({ useFile = false, file = null } = {}) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`;
+  
+    let fileUri = null;
+    let subject = null;
+  
+    try {
+      if (useFile && file) {
+        console.log("Uploading file...");
+        fileUri = await uploadFile(file);
+        console.log("Uploaded file URI:", fileUri);
+      } else {
+        console.log("Retrieving subject from storage...");
+        subject = await new Promise((resolve) => {
+          chrome.storage.local.get({ subject: null }, (result) => {
+            const retrievedSubject = result.subject || "random trivia questions";
+            console.log("Subject retrieved:", retrievedSubject);
+            resolve(retrievedSubject);
+          });
+        });
+      }
+  
+      const requestBody = {
+        contents: [],
+        generationConfig: {
+          temperature: 1,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 8192,
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: "array",
+            description: "List of questions with their answers and explanations",
+            items: {
+              type: "object",
+              description: "Question and answer data",
+              properties: {
+                question_text: {
+                  type: "string",
+                  description: "The text of the question",
+                  nullable: false,
+                },
+                correct_answers: {
+                  type: "array",
+                  description: "List of correct answers",
+                  nullable: false,
+                  items: {
+                    type: "string",
+                  },
+                },
+                incorrect_answers: {
+                  type: "array",
+                  description: "List of incorrect answers",
+                  nullable: false,
+                  items: {
+                    type: "string",
+                  },
+                },
+                topic: {
+                  type: "string",
+                  description: "The specific topic covered by the question",
+                  nullable: false,
+                },
+                explanation: {
+                  type: "string",
+                  description: "Explanation of the correct answer",
+                  nullable: false,
+                },
+              },
+              required: [
+                "question_text",
+                "correct_answers",
+                "incorrect_answers",
+                "topic",
+                "explanation",
+              ],
+            },
+          },
         },
-        body: JSON.stringify(requestBody)
+      };
+  
+      // Add file or subject content to `contents`
+      if (fileUri) {
+        requestBody.contents.push({
+          role: "user",
+          parts: [
+            {
+              fileData: {
+                fileUri: fileUri,
+                mimeType: file.type,
+              },
+            },
+          ],
+        });
+  
+        requestBody.contents.push({
+          role: "user",
+          parts: [
+            {
+              text: `Give me a list of 20 graduate-level questions based on the provided file. Make sure the full response is included and not just the letter. 
+                Do not use keywords from the question in the correct answer. The correct answer should not always be the longest answer. Ensure there always is a correct answer.`,
+            },
+          ],
+        });
+      } else if (subject) {
+        requestBody.contents.push({
+          role: "user",
+          parts: [
+            {
+              text: `Give me a list of 20 graduate-level questions with the subject: ${subject}. Make sure the full response is included and not just the letter. 
+                Do not use keywords from the question in the correct answer. The correct answer should not always be the longest answer. Ensure there always is a correct answer.`,
+            },
+          ],
+        });
+      }
+  
+      // Log request body for debugging
+      console.log("Request body:", JSON.stringify(requestBody, null, 2));
+  
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
       });
   
       if (!response.ok) {
@@ -308,9 +394,9 @@ async function callGemini() {
       }
   
       const data = await response.json();
-      // Debug
       console.log("Generated Response:", data);
   
+      // Process response
       if (
         data.candidates &&
         data.candidates[0] &&
@@ -319,21 +405,17 @@ async function callGemini() {
         data.candidates[0].content.parts[0]
       ) {
         const jsonString = data.candidates[0].content.parts[0].text;
-
         const parsedData = JSON.parse(jsonString);
-        // Debug
         console.log("Parsed JSON Object:", parsedData);
         questionlist = [...questionlist, ...Object.values(parsedData)];
-        // Debug
-        console.log(questionlist)
-        geminiCalled = false
+        console.log("Updated question list:", questionlist);
+        geminiCalled = false;
       } else {
         console.error("Response does not contain the expected structure.");
-        geminiCalled = false
+        geminiCalled = false;
       }
     } catch (error) {
       console.error("Error calling Gemini API:", error);
-      geminiCalled = false
+      geminiCalled = false;
     }
   }
-  

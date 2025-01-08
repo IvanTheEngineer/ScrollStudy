@@ -12,6 +12,38 @@ document.addEventListener("DOMContentLoaded", () => {
     const saveButton = document.getElementById("save-button");
     const resetButton = document.getElementById("reset-stats");
 
+    const dropZone = document.getElementById("dropZone");
+    const fileInfo = document.getElementById("fileInfo");
+  
+    // Add event listeners for drag-and-drop functionality
+    dropZone.addEventListener("dragover", (event) => {
+      event.preventDefault();
+      dropZone.classList.add("dragover");
+    });
+  
+    dropZone.addEventListener("dragleave", () => {
+      dropZone.classList.remove("dragover");
+    });
+  
+    dropZone.addEventListener("drop", (event) => {
+      event.preventDefault();
+      dropZone.classList.remove("dragover");
+  
+      const files = event.dataTransfer.files; // Retrieve the file
+      if (files.length > 0) {
+        const file = files[0]; 
+        fileInfo.textContent = `File name: ${file.name}, size: ${file.size} bytes`;
+  
+        // Process the file
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          console.log("File content:", e.target.result);
+          // Send the file data to the background script or process it locally
+        };
+        reader.readAsArrayBuffer(file);
+      }
+    });
+
     // fetches state of on/off button from local storage
     chrome.storage.local.get({ On: false }, (result) => {
         const isEnabled = result.On;

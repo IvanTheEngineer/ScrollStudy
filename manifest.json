@@ -14,7 +14,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["construction.jpg"],
+      "resources": ["SWE_Sample_Study_Guide.pdf"],
       "matches": ["https://x.com/*"]
     }
   ],
