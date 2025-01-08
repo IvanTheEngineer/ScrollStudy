@@ -209,7 +209,7 @@ function waitForFeed() {
   }
   
 // waitForFeed();
-const apiKey = "AIzaSyBBZWO2wV_rOSVFWfH-aVK-vCIFoIqzrtU";
+const apiKey = "REDACTED";
   
   async function uploadFile(file) {
     const url = `https://generativelanguage.googleapis.com/upload/v1beta/files?key=${apiKey}`;

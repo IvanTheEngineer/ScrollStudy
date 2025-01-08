@@ -34,13 +34,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const file = files[0]; 
         fileInfo.textContent = `File name: ${file.name}, size: ${file.size} bytes`;
   
-        // Process the file
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          console.log("File content:", e.target.result);
-          // Send the file data to the background script or process it locally
-        };
-        reader.readAsArrayBuffer(file);
+        chrome.runtime.sendMessage({ type: "NEW_FILE", file: file }, (response) => {
+            if (chrome.runtime.lastError) {
+              console.error("Error sending file to background.js:", chrome.runtime.lastError.message);
+            } else {
+              console.log("File sent successfully:", response);
+            }
+          });
       }
     });
 
