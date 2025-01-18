@@ -101,3 +101,109 @@ input::placeholder {
   background-color: #f0f8ff;
   color: #00f;
 }
+
+.loader {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.select {
+  display:flex;
+  flex-direction: column;
+  position:relative;
+  width:287.55px;
+  height:28.5px;
+  color: white;
+}
+
+.option {
+  padding:0 30px 0 10px;
+  min-height:28.5px;
+  display:flex;
+  align-items:center;
+  background:rgb(0, 146, 202);
+  border:#ccc solid 1px;
+  position:absolute;
+  top:0;
+  width: 100%;
+  pointer-events:none;
+  order:2;
+  z-index:1;
+  transition:background .4s ease-in-out;
+  box-sizing:border-box;
+  overflow:hidden;
+  white-space:nowrap;
+  
+}
+
+.option:hover {
+  background:hsl(197, 100%, 30%);
+}
+
+.select:focus .option {
+  position:relative;
+  pointer-events:all;
+}
+
+input {
+  opacity:0;
+  position:absolute;
+  left:-99999px;
+}
+
+input:checked + label {
+  order: 1;
+  z-index:2;
+  background:rgb(0, 146, 202);
+  position:relative;
+}
+
+input:checked + label:after {
+  content:'';
+  width: 0; 
+	height: 0; 
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+	border-top: 5px solid white;
+  position:absolute;
+  right:10px;
+  top:calc(50% - 2.5px);
+  pointer-events:none;
+  z-index:3;
+}
+
+input:checked + label:before {
+  position:absolute;
+  right:0;
+  height: 28.5px;
+  width: 40px;
+  content: '';
+  background:rgb(0, 146, 202);
+}
+
+#subject-input {
+  all: unset; /* Resets all styles, removing inherited ones */
+  width: 240px !important;
+  border: 1px solid #ccc !important;
+  padding: 5px !important;
+  font-size: 12px !important;
+  color: white !important;
+}
+
+#key-input {
+  all: unset; /* Resets all styles, removing inherited ones */
+  width: 200px !important;
+  border: 1px solid #ccc !important;
+  padding: 5px !important;
+  font-size: 12px !important;
+  color: white !important;
+}

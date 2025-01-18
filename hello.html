@@ -3,8 +3,56 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <body style="background: rgb(0, 146, 202); box-shadow: none; width:350px">
     <img height=40px src="full_logo.png" alt="Logo">
+
+
+    <div class="flex-container">
+      <span style="color: white; font-weight: bold; text-align: center;" class="label">Gemini API Key:</span>
+      <div id="enterKey" style="display: block;">
+        <input type="text" style="width:200px" id="key-input" maxlength="50" placeholder="Type here..." />
+        <button id="save-key-button" style="margin-left: 5px;" class="save-button">
+          <i class="fa fa-save"></i>
+        </button>
+      </div>
+
+      <div id="validatingKey" style="display: none; width: 70%">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; color: white; font-weight: bold; text-align: center;">
+          <p  style="margin: 0;"> Validating &nbsp</p>
+          <div class="loader"></div>
+        </div>
+        <button class="delete-key-button" style="font-size:12px; background-color:red; color:white; border:none; padding:5px 8px; border-radius:5px; cursor:pointer;"><i class="fa fa-trash-o"></i> Delete</button>
+        </div>
+      </div>
+
+      <div id="validKey" style="display: none; width: 70%">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; color: white; font-weight: bold; text-align: center;">
+            <p style="margin: 0;">Valid</p>
+            <span style="font-size: 20px; margin-left: 5px;">&#9989;</span>
+          </div>
+          <button class="delete-key-button" style="font-size:12px; background-color:red; color:white; border:none; padding:5px 8px; border-radius:5px; cursor:pointer;"><i class="fa fa-trash-o"></i> Delete</button>
+        </div>
+      </div>
+    
+
+    <div id="invalidKey" style="display: none; width: 70%">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; color: white; font-weight: bold; text-align: center;">
+        <p  style="margin: 0;"> Invalid &nbsp</p>
+        <span style='font-size:20px;'>&#10060;</span>
+        </div>
+        <button class="delete-key-button" style="font-size:12px; background-color:red; color:white; border:none; padding:5px 8px; border-radius:5px; cursor:pointer;"><i class="fa fa-trash-o"></i> Delete</button>
+      </div>
+    </div>
+    </div>
+
+    <div id="keyPrompt" style="display: block;">
+      <p style="color: white; font-weight: bold; text-align: center;">Get a free Gemini key <a style="color: white;" href="https://aistudio.google.com/app/apikey" target="_blank">here</a></p>
+    </div>
+
+    <div id="main-ui" style="display: none;">
     <div style="display: flex; align-items: center; justify-content: center;">
-      <p style="color: white; font-weight: bold; text-align: center;">Correct Answers: <span id="answer_stats">Loading...</span></p>
+      <p style="margin: 10px; font-size:14px; color: white; font-weight: bold; text-align: center;">Correct Answers: <span id="answer_stats">Loading...</span></p>
       <button id="reset-stats" style="margin-left: 10px;">
         <i class="fa fa-refresh"></i>
       </button>
@@ -17,17 +65,47 @@
         <span class="slider round"></span>
       </label>
     </div>
+
     <div class="flex-container">
-      <span style="color: white; font-weight: bold; text-align: center;" class="label">Subject:</span>
-      <div>
-        <input type="text" style="width:240px" id="subject-input" maxlength="50" placeholder="Type here..." />
-        <button id="save-button" style="margin-left: 5px;" class="save-button">
-          <i class="fa fa-save"></i>
-        </button>
+    <span style="color: white; font-weight: bold; text-align: center;" class="label">Source:</span>
+    <div class="select" tabindex="1">
+      <input class="selectopt" name="test" type="radio" id="subject" checked>
+      <label for="subject" class="option select-input">Subject</label>
+      <input class="selectopt" name="test" type="radio" id="file">
+      <label for="file" class="option select-input">File</label>
+      <input class="selectopt" name="test" type="radio" id="subject+file">
+      <label for="subject+file" class="option select-input">Subject + File</label>
+    </div>
+    </div>
+
+    <div id="subject-input-area">
+      <div class="flex-container">
+        <span style="color: white; font-weight: bold; text-align: center;" class="label">Subject:</span>
+        <div>
+          <input type="text" id="subject-input" maxlength="50" placeholder="Type here..." />
+          <button id="save-button" style="margin-left: 5px;" class="save-button">
+            <i class="fa fa-save"></i>
+          </button>
+        </div>
       </div>
     </div>
-    <label style="color: white; font-weight: bold; text-align: center;" for="fileInput">Upload File: </label>
-    <div style="color: white; font-weight: bold; text-align: center;" id="dropZone">Drag your file here</div>
-    <p style="color: white; font-weight: bold; text-align: center;" id="fileInfo"></p>
+
+    <div id="file-input-area">
+      <div style="margin-top: 5px;">
+        <div class="flex-container">
+          <label style="color: white; font-weight: bold; text-align: center;" for="fileInput">File: </label>
+          <p style="margin: 0; color: white; font-weight: bold; text-align: center;" id="fileInfo"></p>
+        </div>
+        <div style="margin-top: 5px; color: white; font-weight: bold; text-align: center;" id="dropZone">Drag new file here</div>
+      </div>
+    </div>
+
+  </div>
+
   </body>
+
+
+  <footer style="margin: 5px; color: white; font-weight: bold; text-align: center;">
+    &copy; Ivan Kisselev 2025
+  </footer>
 </html>

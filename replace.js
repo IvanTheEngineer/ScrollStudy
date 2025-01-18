@@ -4,6 +4,17 @@ let answered = 0;
 let correct = 0;
 let On = false;
 let FeedObserver = null;
+let fileUri = null
+let fileData = null
+let mimeType = null
+let apiKey = null
+let source = null;
+
+// fetching API key from local storage
+chrome.storage.local.get({ key: null }, (result) => {
+  apiKey = result.key;
+  console.log("Initial API key:", apiKey);
+});
 
 // function to sop looking at the feed by disconnecting the oserver
 function stopFeedObserver() {
@@ -20,7 +31,25 @@ chrome.storage.local.get({ On: false }, (result) => {
     if (On){
         waitForFeed();
     }
-  });
+});
+
+// fetches initial state of the source
+chrome.storage.local.get({ source: "subject" }, (result) => {
+  source = result.source;
+  console.log("Initial source in replace.js:", source);
+});
+
+// fetches initial fileUri
+chrome.storage.local.get({ fileData: null }, (result) => {
+  if (result.fileData && result.fileData.fileUri && result.fileData.filetype){
+    fileUri = result.fileData.fileUri;
+    mimeType = result.fileData.filetype;
+    console.log("Initial fireUri:", fileUri);
+    console.log("Initial mimeType:", mimeType);
+  } else {
+    console.log("No initial file");
+  }
+});
 
 // Listens to any updates of the on/off button from background.js
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -36,6 +65,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   } else if (message.type === "RESET_ANSWER_STATS") {
     answered = message.answer_stats.answered;
     correct = message.answer_stats.correct;
+  } else if (message.type === "UPDATE_SOURCE") {
+    source = message.source;
+    console.log("Source Updated (replace.js):", source);
   }
 });
 
@@ -44,7 +76,7 @@ function replaceTweets() {
     if (questionlist.length < 15) {
         if (!geminiCalled){
             geminiCalled = true;
-            callGemini();
+            callGemini({source: source});
         }
     }
 
@@ -209,7 +241,6 @@ function waitForFeed() {
   }
   
 // waitForFeed();
-const apiKey = "REDACTED";
   
   async function uploadFile(file) {
     const url = `https://generativelanguage.googleapis.com/upload/v1beta/files?key=${apiKey}`;
@@ -248,30 +279,30 @@ const apiKey = "REDACTED";
     }
   }
 
+
   // Testing
-  const fileUrl = chrome.runtime.getURL("SWE_Sample_Study_Guide.pdf");
-  console.log(fileUrl);
-  fetch(fileUrl)
-    .then((response) => response.blob())
-    .then((blob) => {
-      const file = new File([blob], "example.pdf", { type: "application/pdf" });
-      callGemini({useFile: true, file: file});
-    })
-  .catch((error) => console.error("Error loading file:", error));
+  //const fileUrl = chrome.runtime.getURL("SWE_Sample_Study_Guide.pdf");
+  //console.log(fileUrl);
+  //fetch(fileUrl)
+  //  .then((response) => response.blob())
+  //  .then((blob) => {
+  //    const file = new File([blob], "example.pdf", { type: "application/pdf" });
+  //    callGemini({useFile: true, file: file});
+  //    
+  //  })
+  //.catch((error) => console.error("Error loading file:", error));
+  //callGemini({useFile: true});
 
 
-  async function callGemini({ useFile = false, file = null } = {}) {
+  async function callGemini({ source = "subject" } = {}) {
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`;
   
-    let fileUri = null;
     let subject = null;
   
     try {
-      if (useFile && file) {
-        console.log("Uploading file...");
-        fileUri = await uploadFile(file);
-        console.log("Uploaded file URI:", fileUri);
-      } else {
+      if (source == "file" && fileUri) {
+        console.log("using file")
+      } else if (source ==  "subject" || source == "subject+file") {
         console.log("Retrieving subject from storage...");
         subject = await new Promise((resolve) => {
           chrome.storage.local.get({ subject: null }, (result) => {
@@ -341,15 +372,14 @@ const apiKey = "REDACTED";
         },
       };
   
-      // Add file or subject content to `contents`
-      if (fileUri) {
+      if (fileUri && source == "file") {
         requestBody.contents.push({
           role: "user",
           parts: [
             {
               fileData: {
                 fileUri: fileUri,
-                mimeType: file.type,
+                mimeType: mimeType,
               },
             },
           ],
@@ -359,18 +389,37 @@ const apiKey = "REDACTED";
           role: "user",
           parts: [
             {
-              text: `Give me a list of 20 graduate-level questions based on the provided file. Make sure the full response is included and not just the letter. 
-                Do not use keywords from the question in the correct answer. The correct answer should not always be the longest answer. Ensure there always is a correct answer.`,
+              text: `Give me a list of 20 graduate-level questions based on the provided file. Make sure the full response is included and not just the letter. Do not use keywords from the question in the correct answer. The correct answer should not always be the longest answer. Ensure there always is a correct answer.`,
             },
           ],
         });
-      } else if (subject) {
+      } else if (subject && source == "subject") {
         requestBody.contents.push({
           role: "user",
           parts: [
             {
-              text: `Give me a list of 20 graduate-level questions with the subject: ${subject}. Make sure the full response is included and not just the letter. 
-                Do not use keywords from the question in the correct answer. The correct answer should not always be the longest answer. Ensure there always is a correct answer.`,
+              text: `Give me a list of 20 graduate-level questions with the subject: ${subject}. Make sure the full response is included and not just the letter. Do not use keywords from the question in the correct answer. The correct answer should not always be the longest answer. Ensure there always is a correct answer.`,
+            },
+          ],
+        });
+      } else if (subject && fileUri && source == "subject+file") {
+        requestBody.contents.push({
+          role: "user",
+          parts: [
+            {
+              fileData: {
+                fileUri: fileUri,
+                mimeType: mimeType,
+              },
+            },
+          ],
+        });
+  
+        requestBody.contents.push({
+          role: "user",
+          parts: [
+            {
+              text: `Give me a list of 20 graduate-level questions based on the provided file and the following subject: ${subject}. Make sure the full response is included and not just the letter. Do not use keywords from the question in the correct answer. The correct answer should not always be the longest answer. Ensure there always is a correct answer.`,
             },
           ],
         });
