@@ -47,7 +47,7 @@
     </div>
 
     <div id="keyPrompt" style="display: block;">
-      <p style="color: white; font-weight: bold; text-align: center;">Get a free Gemini key <a style="color: white;" href="https://aistudio.google.com/app/apikey" target="_blank">here</a></p>
+      <p style="color: white; font-weight: bold; text-align: center;">Get a free Gemini key <a style="color: white;" href="https://aistudio.google.com/app/apikey" target="_blank">HERE</a></p>
     </div>
 
     <div id="main-ui" style="display: none;">
@@ -66,6 +66,7 @@
       </label>
     </div>
 
+    <!--
     <div class="flex-container">
     <span style="color: white; font-weight: bold; text-align: center;" class="label">Source:</span>
     <div class="select" tabindex="1">
@@ -77,12 +78,29 @@
       <label for="subject+file" class="option select-input">Subject + File</label>
     </div>
     </div>
+   -->
+
+    <!-- new -->
+    <div class="flex-container">
+      <span style="color: white; font-weight: bold; text-align: center;" class="label">Source:</span>
+      <div class="source-selector">
+        <input class="selectopt" name="test" type="radio" id="subject" checked>
+        <label for="subject" class="option">Subject</label>
+        
+        <input class="selectopt" name="test" type="radio"id="file">
+        <label for="file" class="option">File</label>
+        
+        <input class="selectopt" name="test" type="radio" id="subject+file">
+        <label for="subject+file" class="option">Both</label>
+      </div>
+    </div>
+    <!-- end new-->
 
     <div id="subject-input-area">
       <div class="flex-container">
         <span style="color: white; font-weight: bold; text-align: center;" class="label">Subject:</span>
         <div>
-          <input type="text" id="subject-input" maxlength="50" placeholder="Type here..." />
+          <input type="text" id="subject-input" maxlength="50" placeholder="e.g., Organic Chemistry" />
           <button id="save-button" style="margin-left: 5px;" class="save-button">
             <i class="fa fa-save"></i>
           </button>
@@ -96,7 +114,7 @@
           <label style="color: white; font-weight: bold; text-align: center;" for="fileInput">File: </label>
           <p style="margin: 0; color: white; font-weight: bold; text-align: center;" id="fileInfo"></p>
         </div>
-        <div style="margin-top: 5px; color: white; font-weight: bold; text-align: center;" id="dropZone">Drag new file here</div>
+        <div style="margin-top: 5px; color: white; font-weight: bold; text-align: center;" id="dropZone">Drag & Drop PDF/Text File Here</div>
       </div>
     </div>
 
@@ -105,7 +123,9 @@
   </body>
 
 
-  <footer style="margin: 5px; color: white; font-weight: bold; text-align: center;">
+  <footer class="popup-footer">
     &copy; Ivan Kisselev 2025
   </footer>
+
+<script src="popup.js"></script>
 </html>

@@ -295,7 +295,7 @@ function waitForFeed() {
 
 
   async function callGemini({ source = "subject" } = {}) {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
   
     let subject = null;
   
@@ -320,6 +320,7 @@ function waitForFeed() {
           topK: 40,
           topP: 0.95,
           maxOutputTokens: 8192,
+          thinkingConfig: {"thinkingBudget": 0,},
           responseMimeType: "application/json",
           responseSchema: {
             type: "array",
@@ -389,7 +390,7 @@ function waitForFeed() {
           role: "user",
           parts: [
             {
-              text: `Give me a list of 20 graduate-level questions based on the provided file. Make sure the full response is included and not just the letter. Do not use keywords from the question in the correct answer. The correct answer should not always be the longest answer. Ensure there always is a correct answer.`,
+              text: `Give me a list of 20 graduate-level questions based on the provided file. Make sure the full response is included and not just the letter. Do not use keywords from the question in the correct answer. The three incorrect options must be highly plausible distractors. They should reflect common misconceptions, closely related but incorrect concepts, or subtle inaccuracies that a graduate student might find challenging. Ensure there always is a correct answer.`,
             },
           ],
         });
@@ -398,7 +399,7 @@ function waitForFeed() {
           role: "user",
           parts: [
             {
-              text: `Give me a list of 20 graduate-level questions with the subject: ${subject}. Make sure the full response is included and not just the letter. Do not use keywords from the question in the correct answer. The correct answer should not always be the longest answer. Ensure there always is a correct answer.`,
+              text: `Give me a list of 20 graduate-level questions with the subject: ${subject}. Make sure the full response is included and not just the letter. Do not use keywords from the question in the correct answer. The three incorrect options must be highly plausible distractors. They should reflect common misconceptions, closely related but incorrect concepts, or subtle inaccuracies that a graduate student might find challenging. Ensure there always is a correct answer.`,
             },
           ],
         });
@@ -419,7 +420,7 @@ function waitForFeed() {
           role: "user",
           parts: [
             {
-              text: `Give me a list of 20 graduate-level questions based on the provided file and the following subject: ${subject}. Make sure the full response is included and not just the letter. Do not use keywords from the question in the correct answer. The correct answer should not always be the longest answer. Ensure there always is a correct answer.`,
+              text: `Give me a list of 20 graduate-level questions based on the provided file and the following subject: ${subject}. Make sure the full response is included and not just the letter. Do not use keywords from the question in the correct answer. The three incorrect options must be highly plausible distractors. They should reflect common misconceptions, closely related but incorrect concepts, or subtle inaccuracies that a graduate student might find challenging. Ensure there always is a correct answer.`,
             },
           ],
         });
