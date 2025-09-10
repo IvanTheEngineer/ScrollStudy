@@ -1,131 +1,314 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ScrollStudy</title>
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <body style="background: rgb(0, 146, 202); box-shadow: none; width:350px">
-    <img height=40px src="full_logo.png" alt="Logo">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="popup-container">
+    <!-- Header Section -->
+    <header class="popup-header">
+      <img src="full_logo.png" alt="ScrollStudy Logo" class="logo">
+    </header>
 
-
-    <div class="flex-container">
-      <span style="color: white; font-weight: bold; text-align: center;" class="label">Gemini API Key:</span>
-      <div id="enterKey" style="display: block;">
-        <input type="text" style="width:200px" id="key-input" maxlength="50" placeholder="Type here..." />
-        <button id="save-key-button" style="margin-left: 5px;" class="save-button">
-          <i class="fa fa-save"></i>
-        </button>
+    <!-- API Key Section -->
+    <section class="api-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="fas fa-key"></i>
+          API Configuration
+        </h2>
       </div>
 
-      <div id="validatingKey" style="display: none; width: 70%">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-        <div style="display: flex; align-items: center; color: white; font-weight: bold; text-align: center;">
-          <p  style="margin: 0;"> Validating &nbsp</p>
-          <div class="loader"></div>
-        </div>
-        <button class="delete-key-button" style="font-size:12px; background-color:red; color:white; border:none; padding:5px 8px; border-radius:5px; cursor:pointer;"><i class="fa fa-trash-o"></i> Delete</button>
-        </div>
-      </div>
-
-      <div id="validKey" style="display: none; width: 70%">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-          <div style="display: flex; align-items: center; color: white; font-weight: bold; text-align: center;">
-            <p style="margin: 0;">Valid</p>
-            <span style="font-size: 20px; margin-left: 5px;">&#9989;</span>
+      <!-- Enter Key State -->
+      <div id="enterKey" class="key-input-container">
+        <div class="input-group">
+          <label for="key-input" class="input-label">Gemini API Key</label>
+          <div class="input-wrapper">
+            <input type="password" id="key-input" maxlength="50" placeholder="Enter your API key..." class="api-input">
+            <button id="save-key-button" class="btn btn-primary btn-save">
+              <i class="fas fa-save"></i>
+            </button>
           </div>
-          <button class="delete-key-button" style="font-size:12px; background-color:red; color:white; border:none; padding:5px 8px; border-radius:5px; cursor:pointer;"><i class="fa fa-trash-o"></i> Delete</button>
         </div>
       </div>
-    
 
-    <div id="invalidKey" style="display: none; width: 70%">
-      <div style="display: flex; align-items: center; justify-content: space-between;">
-        <div style="display: flex; align-items: center; color: white; font-weight: bold; text-align: center;">
-        <p  style="margin: 0;"> Invalid &nbsp</p>
-        <span style='font-size:20px;'>&#10060;</span>
-        </div>
-        <button class="delete-key-button" style="font-size:12px; background-color:red; color:white; border:none; padding:5px 8px; border-radius:5px; cursor:pointer;"><i class="fa fa-trash-o"></i> Delete</button>
-      </div>
-    </div>
-    </div>
-
-    <div id="keyPrompt" style="display: block;">
-      <p style="color: white; font-weight: bold; text-align: center;">Get a free Gemini key <a style="color: white;" href="https://aistudio.google.com/app/apikey" target="_blank">HERE</a></p>
-    </div>
-
-    <div id="main-ui" style="display: none;">
-    <div style="display: flex; align-items: center; justify-content: center;">
-      <p style="margin: 10px; font-size:14px; color: white; font-weight: bold; text-align: center;">Correct Answers: <span id="answer_stats">Loading...</span></p>
-      <button id="reset-stats" style="margin-left: 10px;">
-        <i class="fa fa-refresh"></i>
-      </button>
-    </div>
-    <script src="popup.js"></script>
-    <div class="flex-container">
-      <label style="color: white; font-weight: bold; text-align: center;" for="toggle-switch">Enable: </label>
-      <label class="switch">
-        <input type="checkbox" id="toggle-switch">
-        <span class="slider round"></span>
-      </label>
-    </div>
-
-    <!--
-    <div class="flex-container">
-    <span style="color: white; font-weight: bold; text-align: center;" class="label">Source:</span>
-    <div class="select" tabindex="1">
-      <input class="selectopt" name="test" type="radio" id="subject" checked>
-      <label for="subject" class="option select-input">Subject</label>
-      <input class="selectopt" name="test" type="radio" id="file">
-      <label for="file" class="option select-input">File</label>
-      <input class="selectopt" name="test" type="radio" id="subject+file">
-      <label for="subject+file" class="option select-input">Subject + File</label>
-    </div>
-    </div>
-   -->
-
-    <!-- new -->
-    <div class="flex-container">
-      <span style="color: white; font-weight: bold; text-align: center;" class="label">Source:</span>
-      <div class="source-selector">
-        <input class="selectopt" name="test" type="radio" id="subject" checked>
-        <label for="subject" class="option">Subject</label>
-        
-        <input class="selectopt" name="test" type="radio"id="file">
-        <label for="file" class="option">File</label>
-        
-        <input class="selectopt" name="test" type="radio" id="subject+file">
-        <label for="subject+file" class="option">Both</label>
-      </div>
-    </div>
-    <!-- end new-->
-
-    <div id="subject-input-area">
-      <div class="flex-container">
-        <span style="color: white; font-weight: bold; text-align: center;" class="label">Subject:</span>
-        <div>
-          <input type="text" id="subject-input" maxlength="50" placeholder="e.g., Organic Chemistry" />
-          <button id="save-button" style="margin-left: 5px;" class="save-button">
-            <i class="fa fa-save"></i>
+      <!-- Validating Key State -->
+      <div id="validatingKey" class="key-status-container">
+        <div class="status-card validating">
+          <div class="status-content">
+            <div class="status-icon">
+              <div class="loader"></div>
+            </div>
+            <span class="status-text">Validating...</span>
+          </div>
+          <button class="btn btn-danger btn-delete">
+            <i class="fas fa-trash"></i>
           </button>
         </div>
       </div>
-    </div>
 
-    <div id="file-input-area">
-      <div style="margin-top: 5px;">
-        <div class="flex-container">
-          <label style="color: white; font-weight: bold; text-align: center;" for="fileInput">File: </label>
-          <p style="margin: 0; color: white; font-weight: bold; text-align: center;" id="fileInfo"></p>
+      <!-- Valid Key State -->
+      <div id="validKey" class="key-status-container">
+        <div class="status-card valid">
+          <div class="status-content">
+            <div class="status-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <span class="status-text">API Key Valid</span>
+          </div>
+          <button class="btn btn-danger btn-delete">
+            <i class="fas fa-trash"></i>
+          </button>
         </div>
-        <div style="margin-top: 5px; color: white; font-weight: bold; text-align: center;" id="dropZone">Drag & Drop PDF/Text File Here</div>
       </div>
-    </div>
 
+      <!-- Invalid Key State -->
+      <div id="invalidKey" class="key-status-container">
+        <div class="status-card invalid">
+          <div class="status-content">
+            <div class="status-icon">
+              <i class="fas fa-times-circle"></i>
+            </div>
+            <span class="status-text">Invalid API Key</span>
+          </div>
+          <button class="btn btn-danger btn-delete">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Key Prompt -->
+      <div id="keyPrompt" class="key-prompt">
+        <p class="prompt-text">
+          <i class="fas fa-info-circle"></i>
+          Get a free Gemini API key 
+          <a href="https://aistudio.google.com/app/apikey" target="_blank" class="prompt-link">
+            here
+            <i class="fas fa-external-link-alt"></i>
+          </a>
+        </p>
+      </div>
+    </section>
+
+    <!-- Main UI Section -->
+    <main id="main-ui" class="main-content">
+      <!-- Statistics Section -->
+      <section class="stats-section">
+        <div class="stats-card">
+          <div class="stats-content">
+            <div class="stats-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="stats-text">
+              <span class="stats-label">Correct Answers</span>
+              <span id="answer_stats" class="stats-value">Loading...</span>
+            </div>
+          </div>
+          <button id="reset-stats" class="btn btn-secondary btn-reset">
+            <i class="fas fa-refresh"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- Analysis Section -->
+      <section class="analysis-section">
+        <div class="section-header">
+          <h3 class="section-title">
+            <i class="fas fa-brain"></i>
+            Study Analysis
+          </h3>
+        </div>
+        <div class="analysis-controls">
+          <button id="generate-analysis" class="btn btn-primary btn-analysis">
+            <i class="fas fa-chart-bar"></i>
+            Generate Analysis Report
+          </button>
+          <button id="clear-analysis-data" class="btn btn-danger btn-clear">
+            <i class="fas fa-trash"></i>
+            Clear Data
+          </button>
+        </div>
+        <div class="demo-controls">
+          <button id="add-sample-data" class="btn btn-secondary btn-demo">
+            <i class="fas fa-plus"></i>
+            Add Sample Data
+          </button>
+        </div>
+        <div id="analysis-report" class="analysis-report" style="display: none;">
+          <div class="report-header">
+            <h4 class="report-title">
+              <i class="fas fa-file-alt"></i>
+              Your Study Analysis Report
+            </h4>
+            <div class="report-header-controls">
+              <span id="report-date" class="report-date"></span>
+              <button id="toggle-report" class="btn btn-secondary btn-toggle">
+                <i class="fas fa-chevron-up"></i>
+                <span class="toggle-text">Collapse</span>
+              </button>
+            </div>
+          </div>
+          
+          <div id="report-content" class="report-content">
+          
+          <div class="report-section">
+            <h5 class="report-section-title">
+              <i class="fas fa-trophy"></i>
+              Overall Performance
+            </h5>
+            <div class="performance-metrics">
+              <div class="metric">
+                <span class="metric-label">Total Questions</span>
+                <span id="total-questions" class="metric-value">0</span>
+              </div>
+              <div class="metric">
+                <span class="metric-label">Correct Answers</span>
+                <span id="correct-answers" class="metric-value">0</span>
+              </div>
+              <div class="metric">
+                <span class="metric-label">Accuracy Rate</span>
+                <span id="accuracy-rate" class="metric-value">0%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="report-section">
+            <h5 class="report-section-title">
+              <i class="fas fa-star"></i>
+              Strong Areas
+            </h5>
+            <div id="strong-areas" class="areas-list">
+              <p class="no-data">No strong areas identified yet</p>
+            </div>
+          </div>
+
+          <div class="report-section">
+            <h5 class="report-section-title">
+              <i class="fas fa-exclamation-triangle"></i>
+              Areas for Improvement
+            </h5>
+            <div id="weak-areas" class="areas-list">
+              <p class="no-data">No weak areas identified yet</p>
+            </div>
+          </div>
+
+          <div class="report-section">
+            <h5 class="report-section-title">
+              <i class="fas fa-lightbulb"></i>
+              Study Recommendations
+            </h5>
+            <div id="study-recommendations" class="recommendations-list">
+              <p class="no-data">Complete more questions to get personalized recommendations</p>
+            </div>
+          </div>
+
+          <div class="report-section">
+            <h5 class="report-section-title">
+              <i class="fas fa-history"></i>
+              Recent Performance Trend
+            </h5>
+            <div id="performance-trend" class="trend-chart">
+              <p class="no-data">Not enough data for trend analysis</p>
+            </div>
+          </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Toggle Section -->
+      <section class="toggle-section">
+        <div class="toggle-container">
+          <div class="toggle-label">
+            <i class="fas fa-power-off"></i>
+            <span>Enable ScrollStudy</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="toggle-switch">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Source Selection Section -->
+      <section class="source-section">
+        <div class="section-header">
+          <h3 class="section-title">
+            <i class="fas fa-cog"></i>
+            Study Source
+          </h3>
+        </div>
+        <div class="source-selector">
+          <input class="selectopt" name="test" type="radio" id="subject" checked>
+          <label for="subject" class="option">
+            <i class="fas fa-book"></i>
+            <span>Subject</span>
+          </label>
+          
+          <input class="selectopt" name="test" type="radio" id="file">
+          <label for="file" class="option">
+            <i class="fas fa-file"></i>
+            <span>File</span>
+          </label>
+          
+          <input class="selectopt" name="test" type="radio" id="subject+file">
+          <label for="subject+file" class="option">
+            <i class="fas fa-layer-group"></i>
+            <span>Both</span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Subject Input Section -->
+      <section id="subject-input-area" class="input-section">
+        <div class="input-group">
+          <label for="subject-input" class="input-label">
+            <i class="fas fa-graduation-cap"></i>
+            Study Subject
+          </label>
+          <div class="input-wrapper">
+            <input type="text" id="subject-input" maxlength="50" placeholder="e.g., Organic Chemistry" class="subject-input">
+            <button id="save-button" class="btn btn-primary btn-save">
+              <i class="fas fa-save"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- File Input Section -->
+      <section id="file-input-area" class="file-section">
+        <div class="input-group">
+          <label class="input-label">
+            <i class="fas fa-file-upload"></i>
+            Study File
+          </label>
+          <div class="file-info" id="fileInfo"></div>
+          <div class="drop-zone" id="dropZone">
+            <div class="drop-zone-content">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <p class="drop-text">Drag & Drop PDF/Text File Here</p>
+              <p class="drop-subtext">or click to browse</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="popup-footer">
+      <div class="footer-content">
+        <p class="footer-text">
+          <i class="fas fa-heart"></i>
+          Made with love by Ivan Kisselev
+        </p>
+        <p class="footer-year">&copy; 2025</p>
+      </div>
+    </footer>
   </div>
 
-  </body>
-
-
-  <footer class="popup-footer">
-    &copy; Ivan Kisselev 2025
-  </footer>
-
-<script src="popup.js"></script>
+  <script src="popup.js"></script>
+</body>
 </html>

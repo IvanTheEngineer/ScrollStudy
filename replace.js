@@ -103,6 +103,7 @@ function replaceTweets() {
     randomTweet.dataset.replaced = "true";
 
     const questionData = questionlist.pop()
+    const questionStartTime = Date.now(); // Track when question is displayed
     // Debug
     console.log("questions left: ", questionlist.length)
 
@@ -163,6 +164,30 @@ function replaceTweets() {
 
         // Debug
         console.log(correct, " / ", answered)
+
+        // Save question/answer data for analysis
+        const qaData = {
+            question: questionData.question_text,
+            answer: questionData.correct_answers[0], // Assuming single correct answer
+            userAnswer: answerButton.textContent,
+            isCorrect: questionData.correct_answers.includes(answerButton.textContent),
+            topic: questionData.topic || 'General',
+            subject: source === 'subject' ? 'Custom Subject' : (source === 'file' ? 'File Content' : 'Combined'),
+            difficulty: 'Graduate Level',
+            timeSpent: Date.now() - questionStartTime,
+            source: source
+        };
+
+        chrome.runtime.sendMessage({ 
+            type: "SAVE_QUESTION_ANSWER", 
+            qaData: qaData
+        }, (response) => {
+            if (chrome.runtime.lastError) {
+                console.error("Error saving QA data:", chrome.runtime.lastError.message);
+            } else {
+                console.log("QA data saved successfully:", response);
+            }
+        });
 
         chrome.runtime.sendMessage({ 
             type: "UPDATE_ANSWER_STATS", 
