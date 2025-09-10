@@ -14,6 +14,7 @@ seamlessly transformed into a productive space! ScrollStudy allows you to provid
 
 ## Planned Features
 * Support for more social media sites
+* Support for images in questions
 * Improved UI design
 * More customization for questions (difficulty, question style, etc.)
 * Detailed analysis and feedback on user's strengths and weaknesses
